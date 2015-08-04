@@ -1,12 +1,17 @@
 {
     "name": "noidhoon/vanilla",
+    "type": "framework",
+    "description": "php micro-framework",
+    "homepage": "https://github.com/noidhoon/Vanilla",
+    "license": "MIT",
     "authors": [
         {
             "name": "Sabato Luca Guadagno",
-            "email": "noidhoon@gmail.com"
+            "email": "noidhoon@gmail.com",
+            "homepage": "http://noidhoon.org",
+            "role": "Developer"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.0"
     },
