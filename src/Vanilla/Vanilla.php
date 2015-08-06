@@ -5,66 +5,57 @@ namespace Vanilla;
 class Vanilla
 {
     public $vanilla_routes;
-    public $vanilla_modules;
+    public $vanilla_events;
 
     function __construct()
     {
         $this -> vanilla_routes = new \ArrayObject([]);
-        $this -> vanilla_modules = new \ArrayObject([]);
+        $this -> vanilla_events = new \ArrayObject([]);
     }
 
-    /** @param $vanilla_route Route */
-    public function add( $vanilla_route )
+    public function add( $vanilla_object )
     {
-        if( $vanilla_route instanceof Route )
+        if( $vanilla_object instanceof Route )
         {
-            $vanilla_route -> route_uri = dirname( $_SERVER['PHP_SELF'] ) . $vanilla_route -> route_uri;
-            $vanilla_route -> route_method = strtoupper( $vanilla_route -> route_method );
-            $this -> vanilla_routes[] = $vanilla_route;
+            $vanilla_object -> route_uri = dirname( $_SERVER['PHP_SELF'] ) . $vanilla_object -> route_uri;
+            $vanilla_object -> route_method = strtoupper( $vanilla_object -> route_method );
+            $this -> vanilla_routes[] = $vanilla_object;
+        }
+        else if( $vanilla_object instanceof Event )
+        {
+            $this -> vanilla_events[] = $vanilla_object;
+        }
+    }
+
+    public function trig( $event_name )
+    {
+        /** @var $vanilla_event Event */
+        foreach( $this -> vanilla_events as $vanilla_event )
+        {
+            if( !strcmp( strtoupper( $vanilla_event -> event_name ), strtoupper( $event_name ) ) )
+            {
+                call_user_func( $vanilla_event -> event_callback );
+            }
         }
     }
 
     public function play()
     {
+        $this -> trig('after');
+
         $vanilla_uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
         $vanilla_method = strtoupper( $_SERVER['REQUEST_METHOD'] );
 
-        /** @var $route Route */
-        foreach( $this -> vanilla_routes as $route )
+        /** @var $vanilla_route Route */
+        foreach( $this -> vanilla_routes as $vanilla_route )
         {
-            if( !strcmp( $route -> route_uri, $vanilla_uri ) && !strcmp( $route -> route_method, $vanilla_method ) )
+            if( $vanilla_route -> uricmp( $vanilla_uri ) && !strcmp( $vanilla_route -> route_method, $vanilla_method ) )
             {
-                call_user_func( $route -> route_callback );
+                $vanilla_parameters = $vanilla_route -> parameters( $vanilla_uri );
+                call_user_func_array( $vanilla_route -> route_callback, $vanilla_parameters );
             }
         }
-    }
-}
 
-class Route
-{
-    public $route_method;
-    public $route_uri;
-    public $route_callback;
-
-    function __construct( $route_method, $route_uri, $route_callback )
-    {
-        $this -> route_uri = $route_uri;
-        $this -> route_method = $route_method;
-        $this -> route_callback = $route_callback;
-    }
-}
-
-class Module
-{
-    private $module_methods = [];
-
-    function __construct()
-    {
-
-    }
-
-    function __call( $module_name, $module_arguments )
-    {
-        print 'Calling ' . $module_name . 'with arguments ' . implode( ', ', $module_arguments );
+        $this -> trig('before');
     }
 }
