@@ -9,7 +9,7 @@ class Event
 
     function __construct( $event_name, $event_callback )
     {
-        $this -> event_name = $event_name;
+        $this -> event_name = strtoupper( $event_name );
         $this -> event_callback = $event_callback;
     }
 }

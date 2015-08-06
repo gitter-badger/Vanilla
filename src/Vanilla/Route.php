@@ -10,8 +10,8 @@ class Route
 
     function __construct( $route_method, $route_uri, $route_callback )
     {
-        $this -> route_uri = $route_uri;
-        $this -> route_method = $route_method;
+        $this -> route_uri = dirname( $_SERVER['PHP_SELF'] ) . $route_uri;
+        $this -> route_method = strtoupper( $route_method );
         $this -> route_callback = $route_callback;
     }
 

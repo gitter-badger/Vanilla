@@ -13,35 +13,55 @@ class Vanilla
         $this -> vanilla_events = new \ArrayObject([]);
     }
 
-    public function add( $vanilla_object )
+    public function get( $route_uri, $route_callback )
     {
-        if( $vanilla_object instanceof Route )
-        {
-            $vanilla_object -> route_uri = dirname( $_SERVER['PHP_SELF'] ) . $vanilla_object -> route_uri;
-            $vanilla_object -> route_method = strtoupper( $vanilla_object -> route_method );
-            $this -> vanilla_routes[] = $vanilla_object;
-        }
-        else if( $vanilla_object instanceof Event )
-        {
-            $this -> vanilla_events[] = $vanilla_object;
-        }
+        $this -> add_route('GET', $route_uri, $route_callback );
     }
 
-    public function trig( $event_name )
+    public function post( $route_uri, $route_callback )
     {
+        $this -> add_route('POST', $route_uri, $route_callback );
+    }
+
+    private function add_route( $route_method, $route_uri, $route_callback )
+    {
+        $vanilla_route = new Route( $route_method, $route_uri, $route_callback );
+        $this -> vanilla_routes[] = $vanilla_route;
+    }
+
+    public function before( $event_callback )
+    {
+        $this -> add_event( 'before', $event_callback );
+    }
+
+    public function after( $event_callback )
+    {
+        $this -> add_event( 'after', $event_callback );
+    }
+
+    private function add_event( $event_name, $event_callback )
+    {
+        $vanilla_event = new Event( $event_name, $event_callback );
+        $this -> vanilla_events[] = $vanilla_event;
+    }
+
+    public function event( $event_name )
+    {
+        $event_name = strtoupper( $event_name );
+
         /** @var $vanilla_event Event */
         foreach( $this -> vanilla_events as $vanilla_event )
         {
-            if( !strcmp( strtoupper( $vanilla_event -> event_name ), strtoupper( $event_name ) ) )
+            if( !strcmp( $vanilla_event -> event_name , $event_name ) )
             {
                 call_user_func( $vanilla_event -> event_callback );
             }
         }
     }
 
-    public function play()
+    public function run()
     {
-        $this -> trig('after');
+        $this -> event('after');
 
         $vanilla_uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
         $vanilla_method = strtoupper( $_SERVER['REQUEST_METHOD'] );
@@ -56,6 +76,6 @@ class Vanilla
             }
         }
 
-        $this -> trig('before');
+        $this -> event('before');
     }
 }
