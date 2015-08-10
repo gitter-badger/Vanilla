@@ -50,6 +50,11 @@ class Vanilla
         $this -> add_event( 'after', $event_callback );
     }
 
+    public function ops( $event_callback )
+    {
+        $this -> add_event( 'ops', $event_callback );
+    }
+
     private function add_event( $event_name, $event_callback )
     {
         $vanilla_event = new Event( $event_name, $event_callback );
@@ -74,6 +79,7 @@ class Vanilla
     {
         $vanilla_uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
         $vanilla_method = strtoupper( $_SERVER['REQUEST_METHOD'] );
+        $vanilla_ops = true;
 
         /** @var $vanilla_route Route */
         foreach( $this -> vanilla_routes as $vanilla_route )
@@ -86,7 +92,13 @@ class Vanilla
                 call_user_func_array( $vanilla_route -> route_callback, $vanilla_parameters );
 
                 $this -> event('after');
+                $vanilla_ops = false;
             }
+        }
+
+        if( $vanilla_ops )
+        {
+            $this -> event('ops');
         }
     }
 }
