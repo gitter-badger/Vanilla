@@ -4,13 +4,24 @@ namespace Vanilla;
 
 class Vanilla
 {
+    /** @var \ArrayObject $vanilla_routes */
     public $vanilla_routes;
+
+    /** @var \ArrayObject $vanilla_events */
     public $vanilla_events;
 
-    function __construct()
+    /** @var Session $vanilla_session */
+    public $vanilla_session;
+
+    /** @var string $vanilla_application */
+    public $vanilla_application;
+
+    function __construct( $vanilla_application = 'Vanilla' )
     {
         $this -> vanilla_routes = new \ArrayObject([]);
         $this -> vanilla_events = new \ArrayObject([]);
+        $this -> vanilla_session = new Session( $vanilla_application );
+        $this -> vanilla_application = $vanilla_application;
     }
 
     public function get( $route_uri, $route_callback )
