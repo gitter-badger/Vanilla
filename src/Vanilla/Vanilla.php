@@ -10,6 +10,9 @@ class Vanilla
     /** @var \ArrayObject $vanilla_events */
     public $vanilla_events;
 
+    /** @var \ArrayObject $vanilla_modules */
+    public $vanilla_modules;
+
     /** @var Session $vanilla_session */
     public $vanilla_session;
 
@@ -20,6 +23,7 @@ class Vanilla
     {
         $this -> vanilla_routes = new \ArrayObject([]);
         $this -> vanilla_events = new \ArrayObject([]);
+        $this -> vanilla_modules = new \ArrayObject([]);
         $this -> vanilla_session = new Session( $vanilla_application );
         $this -> vanilla_application = $vanilla_application;
     }
@@ -75,6 +79,35 @@ class Vanilla
         }
     }
 
+    public function extend( $module )
+    {
+        if( $module instanceof Module )
+        {
+            /** @var Module $vanilla_module */
+            foreach( $this -> vanilla_modules as $vanilla_module )
+            {
+                if( !strcmp( $vanilla_module -> module_name, $module -> module_name ) )
+                {
+                    return $vanilla_module;
+                }
+            }
+
+            $this -> vanilla_modules[] = $module;
+        }
+    }
+
+    public function module( $module_name )
+    {
+        /** @var Module $vanilla_module */
+        foreach( $this -> vanilla_modules as $vanilla_module )
+        {
+            if( !strcmp( $vanilla_module -> module_name, $module_name ) )
+            {
+                return $vanilla_module;
+            }
+        }
+    }
+
     public function run()
     {
         $vanilla_uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
@@ -90,9 +123,9 @@ class Vanilla
 
                 $vanilla_parameters = $vanilla_route -> parameters( $vanilla_uri );
                 call_user_func_array( $vanilla_route -> route_callback, $vanilla_parameters );
+                $vanilla_ops = false;
 
                 $this -> event('after');
-                $vanilla_ops = false;
             }
         }
 
