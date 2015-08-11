@@ -16,6 +16,9 @@ class Vanilla
     /** @var Session $vanilla_session */
     public $vanilla_session;
 
+    /** @var Variables $vanilla_variables */
+    public $vanilla_variables;
+
     /** @var string $vanilla_application */
     public $vanilla_application;
 
@@ -25,6 +28,7 @@ class Vanilla
         $this -> vanilla_events = new \ArrayObject([]);
         $this -> vanilla_modules = new \ArrayObject([]);
         $this -> vanilla_session = new Session( $vanilla_application );
+        $this -> vanilla_variables = new Variables();
         $this -> vanilla_application = $vanilla_application;
     }
 
