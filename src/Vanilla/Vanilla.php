@@ -29,6 +29,7 @@ class Vanilla
         $this -> vanilla_modules = new \ArrayObject([]);
         $this -> vanilla_session = new Session( $vanilla_application );
         $this -> vanilla_variables = new Variables();
+        $this -> vanilla_variables -> set('views', __DIR__ . '/../../views/');
         $this -> vanilla_application = $vanilla_application;
     }
 
@@ -112,6 +113,14 @@ class Vanilla
         }
     }
 
+    public function render( $vanilla_template )
+    {
+        ob_end_clean();
+        ob_start();
+        require_once( $this -> vanilla_variables -> get('views') . $vanilla_template );
+        ob_end_flush();
+    }
+
     public function run()
     {
         $vanilla_uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
@@ -125,10 +134,11 @@ class Vanilla
             {
                 $this -> event('before');
 
+                ob_start();
                 $vanilla_parameters = $vanilla_route -> parameters( $vanilla_uri );
                 call_user_func_array( $vanilla_route -> route_callback, $vanilla_parameters );
-                $vanilla_ops = false;
 
+                $vanilla_ops = false;
                 $this -> event('after');
             }
         }
