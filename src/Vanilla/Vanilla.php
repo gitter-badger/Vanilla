@@ -29,7 +29,6 @@ class Vanilla
         $this -> vanilla_modules = new \ArrayObject([]);
         $this -> vanilla_session = new Session( $vanilla_application );
         $this -> vanilla_variables = new Variables();
-        $this -> vanilla_variables -> set('views', __DIR__ . '/../../views/');
         $this -> vanilla_application = $vanilla_application;
     }
 
@@ -119,6 +118,11 @@ class Vanilla
         ob_start();
         require_once( $this -> vanilla_variables -> get('views') . $vanilla_template );
         ob_end_flush();
+    }
+
+    public function section( $vanilla_section )
+    {
+        require( $this -> vanilla_variables -> get('sections') . $vanilla_section );
     }
 
     public function run()
