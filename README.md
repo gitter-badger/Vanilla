@@ -19,4 +19,4 @@ $application -> get('/', function () use ( $application ) {
 });
 
 $application -> run();
-``
+```
