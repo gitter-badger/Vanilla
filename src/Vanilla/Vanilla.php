@@ -33,6 +33,7 @@ class Vanilla
     }
 
     /* Routes ------------------------------------------------------------------------------------------------------- */
+
     public function get( $route_uri, $route_callback )
     {
         $this -> add_route('get', $route_uri, $route_callback );
@@ -96,7 +97,7 @@ class Vanilla
         }
         else
         {
-            return $this -> vanilla_variables -> get( $vanilla_key );
+            print $this -> vanilla_variables -> get( $vanilla_key );
         }
     }
 
@@ -110,7 +111,7 @@ class Vanilla
         }
         else
         {
-            return $this -> vanilla_session -> read( $vanilla_key );
+            print $this -> vanilla_session -> read( $vanilla_key );
         }
     }
 
