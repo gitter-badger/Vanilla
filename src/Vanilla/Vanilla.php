@@ -32,6 +32,7 @@ class Vanilla
         $this -> vanilla_application = $vanilla_application;
     }
 
+    /* Routes ------------------------------------------------------------------------------------------------------- */
     public function get( $route_uri, $route_callback )
     {
         $this -> add_route('get', $route_uri, $route_callback );
@@ -47,6 +48,8 @@ class Vanilla
         $vanilla_route = new Route( $route_method, $route_uri, $route_callback );
         $this -> vanilla_routes[] = $vanilla_route;
     }
+
+    /* Events ------------------------------------------------------------------------------------------------------- */
 
     public function before( $event_callback )
     {
@@ -83,6 +86,36 @@ class Vanilla
         }
     }
 
+    /* Variables ---------------------------------------------------------------------------------------------------- */
+
+    public function vars( $vanilla_key, $vanilla_value = null )
+    {
+        if( $vanilla_value )
+        {
+            $this -> vanilla_variables -> set( $vanilla_key, $vanilla_value );
+        }
+        else
+        {
+            return $this -> vanilla_variables -> get( $vanilla_key );
+        }
+    }
+
+    /* Sessions ----------------------------------------------------------------------------------------------------- */
+
+    public function session( $vanilla_key, $vanilla_value = null )
+    {
+        if( $vanilla_value )
+        {
+            $this -> vanilla_session -> write( $vanilla_key, $vanilla_value );
+        }
+        else
+        {
+            return $this -> vanilla_session -> read( $vanilla_key );
+        }
+    }
+
+    /* Modules ------------------------------------------------------------------------------------------------------ */
+
     public function extend( $module )
     {
         if( $module instanceof Module )
@@ -112,6 +145,8 @@ class Vanilla
         }
     }
 
+    /* Render ------------------------------------------------------------------------------------------------------- */
+
     public function render( $vanilla_template )
     {
         ob_end_clean();
@@ -124,6 +159,8 @@ class Vanilla
     {
         require( $this -> vanilla_variables -> get('sections') . $vanilla_section );
     }
+
+    /* Run ---------------------------------------------------------------------------------------------------------- */
 
     public function run()
     {
