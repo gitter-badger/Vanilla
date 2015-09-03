@@ -97,7 +97,7 @@ class Vanilla
         }
         else
         {
-            print $this -> vanilla_variables -> get( $vanilla_key );
+            $this -> vanilla_variables -> get( $vanilla_key );
         }
     }
 
@@ -111,7 +111,7 @@ class Vanilla
         }
         else
         {
-            print $this -> vanilla_session -> read( $vanilla_key );
+            $this -> vanilla_session -> read( $vanilla_key );
         }
     }
 
